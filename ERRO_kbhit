@@ -1,0 +1,200 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <windows.h>
+#include <conio.h>
+
+  int lin, col, nrobomb;
+  char  sqr[100][100];
+  long double pos_x, pos_y;
+
+  void bombasadj()
+{
+  int i,j,posx,posy,nb;
+  nb=0;
+  for(;;){
+printf("insira as coordenadas do quadrado para verificacao de bombas vizinha");
+  scanf("%d %d",&posx,&posy);
+    if(sqr[posx][posy]=='*')
+    {
+      printf("Quadrado com bomba\n");
+      exit(0);
+    }
+    else{
+    for(i=-1;i<=1;i++)
+      {
+        for(j=-1;j<=1;j++)
+          {
+            if(sqr[posx+i][posy+j]=='*')
+            {
+                nb++;
+                printf("existe uma bomba no quadrante %d %d\n",posx+i,posy+j);
+
+            }
+          }
+      }
+    }
+    printf("\n%d\n",nb);
+  }
+}
+
+  int vfy()
+  {
+      int xx, yy;
+      for(xx=0;xx<35;xx++) // x
+      {
+          for(yy=0;yy<35;yy++) // y
+          {
+              if((pos_x>(64 + xx*(17)))&&(pos_x<(81 + xx*(17)))&&(pos_y>(158 + yy*(69)))&&(pos_y<(172 + yy*(69))))
+              {
+                 if(sqr[xx][yy]== '*')
+                 {
+                     return 0;
+                 }
+                 if(sqr[xx][yy]!= '*')
+                 {
+                     sqr[xx][yy]= 'E';
+                     return 1;
+                 }
+              }
+          }
+      }
+  }
+
+    int lermouse() {
+        int b;
+        POINT cursorPosition;
+
+        while(1) {
+
+            GetCursorPos(&cursorPosition);
+            Sleep(100);
+            if(kbhit())
+            {
+                pos_x= cursorPosition.x;
+                pos_y= cursorPosition.y;
+                b = vfy();
+                return b;
+                break;
+            }
+            if(!kbhit())
+            {
+
+            }
+        }
+    }
+
+void bomba()
+{
+  srand(time(NULL));
+  int i,b,a,c[50];
+  for(i=0;i<nrobomb;i++)
+    {
+      b=rand()%(col);
+      a=rand()%(lin);
+      sqr[a][b]= '*';
+    }
+}
+
+void campo()
+{
+    int a, b;
+    for (a=0; a<lin; a++)
+    {
+        printf("\n");
+            for(b=0;b<col; b++)
+            {
+            printf("|%c|\t", sqr[a][b]);
+            }
+        printf("\n \n");
+    }
+}
+
+void campoi()
+{
+    int a, b;
+    for (a=0; a<lin; a++)
+    {
+        printf("\n");
+            for(b=0;b<col; b++)
+            {
+            sqr[a][b]= ' ';
+            printf("|%c|\t", sqr[a][b]);
+            }
+
+        printf("\n \n");
+    }
+    bomba();
+}
+
+void Facil()
+{
+    lin=5;
+    col=8;
+    nrobomb=8;
+    bomba();
+}
+
+void Medio()
+{
+    lin=8;
+    col=12;
+    nrobomb= 15;
+    bomba();
+}
+
+void Dificil()
+{
+    lin=12;
+    col=15;
+    nrobomb=20;
+    bomba();
+}
+
+void Custom()
+{
+    printf("de linha e coluna \n");
+    scanf("%d", &lin);
+    scanf("%d", &col);
+    nrobomb= ((lin)*(col))/6;
+    bomba();
+}
+
+int main()
+{
+    int a;
+
+    int dif;
+    printf("selecione dificuldade \n");
+    scanf("%d", &dif);
+    if(dif== 1)
+    {
+        Facil();
+    }
+    if(dif==2)
+    {
+        Medio();
+    }
+    if(dif==3)
+    {
+        Dificil();
+    }
+    if(dif==4)
+    {
+        Custom();
+    }
+    campoi();
+    lermouse();
+    system("cls");
+
+    a=1;
+    while(a)
+    {
+        campo();
+        a = lermouse();
+        system("cls");
+    }
+
+    return 0;
+}
